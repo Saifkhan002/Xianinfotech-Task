@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xaininfotect_task/firebase_options.dart';
-import 'tnx_dashboard.dart';
+import 'package:xaininfotect_task/config/firebase_options.dart';
+import 'screens/tnx_dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Xianinfotech LLC',
-      home: const TnxDashboard(),
+      home: TnxDashboard(),
     );
   }
 }
