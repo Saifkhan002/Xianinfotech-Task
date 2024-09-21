@@ -256,44 +256,41 @@ class AddItemToSaleScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                bottomLeft: Radius.circular(8)),
-                            border: Border.all(
-                              color: Colors.grey,
-                            ),
+                  Row(
+                    children: [
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8)),
+                          border: Border.all(
+                            color: Colors.grey,
                           ),
                         ),
-                        Container(
-                          height: 40,
-                          width: 90,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(8),
-                                bottomRight: Radius.circular(8)),
-                            border: Border.all(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "0.00",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 16),
-                            ),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 90,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(8),
+                              bottomRight: Radius.circular(8)),
+                          border: Border.all(
+                            color: Colors.grey,
                           ),
                         ),
-                      ],
-                    ),
+                        child: const Center(
+                          child: Text(
+                            "0.00",
+                            style: TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

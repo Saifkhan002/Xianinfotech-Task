@@ -1,6 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:xaininfotect_task/models/sale_model.dart';
+import 'package:xaininfotect_task/providers/sale_provider.dart';
+import 'package:xaininfotect_task/providers/settings_provider.dart';
+import 'package:xaininfotect_task/utils/get_uuid.dart';
 import 'add_item.dart';
 
 class SaleScreen extends StatefulWidget {
@@ -16,6 +19,9 @@ class _SaleScreenState extends State<SaleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settingsProvider = context.watch<SettingsProvider>();
+    final saleProvider = context.watch<SaleProvider>();
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -41,9 +47,9 @@ class _SaleScreenState extends State<SaleScreen> {
             const SizedBox(height: 16),
             _buildFirmNameField(),
             const SizedBox(height: 16),
-            _CustomTextField(),
+            _customTextField(),
             const SizedBox(height: 16),
-            _BilledItems(),
+            _billedItems(),
             const SizedBox(height: 16),
             _buildAddItemsButton(),
             const SizedBox(height: 16),
@@ -93,7 +99,23 @@ class _SaleScreenState extends State<SaleScreen> {
                 Expanded(
                   flex: 3,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      String saleID = getUUID();
+                      List<ItemModel> items = [
+                        ItemModel(itemName: 'Name'),
+                      ];
+                      SaleModel sale = SaleModel(
+                          billingName: 'Name',
+                          timestamp: DateTime.now(),
+                          invoiceNumber:
+                              await settingsProvider.getInvoiceNumber(),
+                          total: 15000000,
+                          balance: 2500000,
+                          id: saleID,
+                          items: items);
+                      await saleProvider.saveSale(sale);
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -241,22 +263,20 @@ class _SaleScreenState extends State<SaleScreen> {
         Text('Firm Name:',
             style: TextStyle(color: Colors.grey[600], fontSize: 12)),
         const SizedBox(height: 4),
-        Container(
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('xianinfotech LLP',
-                  style: TextStyle(fontSize: 16, color: Colors.black87)),
-              SizedBox(width: 6),
-              Icon(Icons.arrow_drop_down, color: Colors.grey),
-            ],
-          ),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('xianinfotech LLP',
+                style: TextStyle(fontSize: 16, color: Colors.black87)),
+            SizedBox(width: 6),
+            Icon(Icons.arrow_drop_down, color: Colors.grey),
+          ],
         ),
       ],
     );
   }
 
-  Widget _CustomTextField() {
+  Widget _customTextField() {
     return const Column(
       children: [
         SizedBox(
@@ -295,7 +315,7 @@ class _SaleScreenState extends State<SaleScreen> {
     );
   }
 
-  Widget _BilledItems() {
+  Widget _billedItems() {
     return Column(
       children: [
         Container(

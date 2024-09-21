@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:xaininfotect_task/providers/settings_provider.dart';
+import 'package:xaininfotect_task/widgets/loading_widget.dart';
 
 import 'sales.dart';
 
@@ -10,46 +13,68 @@ class TnxDashboard extends StatefulWidget {
 }
 
 class _TnxDashboardState extends State<TnxDashboard> {
+  bool _isLoading = true;
+  // initialize settings from firebase
+  init() async {
+    final settingsProvider = context.read<SettingsProvider>();
+    await settingsProvider.fetchSettings();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFE5F2FF),
-      appBar: AppBar(
-        title: const Text('Xianinfotech LLP',
-            style: TextStyle(color: Colors.black)),
-        leading: const Icon(Icons.home_work_outlined, color: Colors.blue),
-        actions: const [
-          Icon(Icons.notifications_none_rounded, color: Colors.black),
-          SizedBox(width: 8),
-          Icon(Icons.settings, color: Colors.green),
-          SizedBox(width: 10),
-        ],
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          _buildTabs(),
-          _buildQuickLinks(),
-          _buildSearchBar(),
-          _buildTransactionList(),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SaleScreen()));
-        },
-        label: const Text(
-          'Add New Sale',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        icon: const Icon(Icons.currency_rupee_rounded, color: Colors.white),
-        backgroundColor: Colors.red,
-        shape: const StadiumBorder(),
-      ),
-      bottomNavigationBar: _buildBottomNavBar(),
-    );
+    return !_isLoading
+        ? Scaffold(
+            backgroundColor: const Color(0xFFE5F2FF),
+            appBar: AppBar(
+              title: const Text('Xianinfotech LLP',
+                  style: TextStyle(color: Colors.black)),
+              leading: const Icon(Icons.home_work_outlined, color: Colors.blue),
+              actions: const [
+                Icon(Icons.notifications_none_rounded, color: Colors.black),
+                SizedBox(width: 8),
+                Icon(Icons.settings, color: Colors.green),
+                SizedBox(width: 10),
+              ],
+              elevation: 0,
+            ),
+            body: Column(
+              children: [
+                _buildTabs(),
+                _buildQuickLinks(),
+                _buildSearchBar(),
+                _buildTransactionList(),
+              ],
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SaleScreen()));
+              },
+              label: const Text(
+                'Add New Sale',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              icon:
+                  const Icon(Icons.currency_rupee_rounded, color: Colors.white),
+              backgroundColor: Colors.red,
+              shape: const StadiumBorder(),
+            ),
+            bottomNavigationBar: _buildBottomNavBar(),
+          )
+        : const LoadingWidget();
   }
 
   Widget _buildTabs() {

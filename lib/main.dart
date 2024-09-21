@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:xaininfotect_task/config/firebase_options.dart';
+import 'package:xaininfotect_task/providers/sale_provider.dart';
+import 'package:xaininfotect_task/providers/settings_provider.dart';
 import 'screens/tnx_dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -14,10 +17,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Xianinfotech LLC',
-      home: TnxDashboard(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => SaleProvider()),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Xianinfotech LLC',
+        home: TnxDashboard(),
+      ),
     );
   }
 }
