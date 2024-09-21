@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:xaininfotect_task/config/firebase_options.dart';
 import 'package:xaininfotect_task/providers/sale_provider.dart';
 import 'package:xaininfotect_task/providers/settings_provider.dart';
 import 'screens/tnx_dashboard.dart';
@@ -8,7 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

@@ -14,6 +14,9 @@ class SaleScreen extends StatefulWidget {
 }
 
 class _SaleScreenState extends State<SaleScreen> {
+  TextEditingController customerController = TextEditingController();
+  TextEditingController billingController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   bool isCreditSelected = true;
   bool isReceived = true;
 
@@ -100,17 +103,28 @@ class _SaleScreenState extends State<SaleScreen> {
                   flex: 3,
                   child: ElevatedButton(
                     onPressed: () async {
+                      // Ensure that the text from the TextEditingController is parsed to double
+                      double totalAmount = billingController.text.isNotEmpty
+                          ? double.tryParse(billingController.text) ??
+                              0.0 // Parse to double, default to 0.0 if invalid
+                          : 0.0;
+
+                      double balanceAmount = phoneController.text.isNotEmpty
+                          ? double.tryParse(phoneController.text) ??
+                              0.0 // Parse to double, default to 0.0 if invalid
+                          : 0.0;
+
                       String saleID = getUUID();
                       List<ItemModel> items = [
                         ItemModel(itemName: 'Name'),
                       ];
                       SaleModel sale = SaleModel(
-                          billingName: 'Name',
+                          billingName: customerController.text,
                           timestamp: DateTime.now(),
                           invoiceNumber:
                               await settingsProvider.getInvoiceNumber(),
-                          total: 15000000,
-                          balance: 2500000,
+                          total: totalAmount,
+                          balance: balanceAmount,
                           id: saleID,
                           items: items);
                       await saleProvider.saveSale(sale);
@@ -277,12 +291,13 @@ class _SaleScreenState extends State<SaleScreen> {
   }
 
   Widget _customTextField() {
-    return const Column(
+    return Column(
       children: [
         SizedBox(
           height: 55,
           child: TextField(
-            decoration: InputDecoration(
+            controller: customerController,
+            decoration: const InputDecoration(
               hintText: ('Customer'),
               hintStyle: TextStyle(color: Colors.grey),
               border: OutlineInputBorder(),
@@ -293,6 +308,7 @@ class _SaleScreenState extends State<SaleScreen> {
         SizedBox(
           height: 55,
           child: TextField(
+            controller: billingController,
             decoration: InputDecoration(
               hintText: 'Billing Name(Optional)',
               hintStyle: TextStyle(color: Colors.grey),
@@ -304,6 +320,7 @@ class _SaleScreenState extends State<SaleScreen> {
         SizedBox(
           height: 55,
           child: TextField(
+            controller: phoneController,
             decoration: InputDecoration(
               hintText: 'Phone Number',
               hintStyle: TextStyle(color: Colors.grey),

@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:xaininfotect_task/providers/settings_provider.dart';
 import 'package:xaininfotect_task/widgets/loading_widget.dart';
-
 import 'sales.dart';
 
 class TnxDashboard extends StatefulWidget {
@@ -200,20 +200,33 @@ class _TnxDashboardState extends State<TnxDashboard> {
 
   Widget _buildTransactionList() {
     return Expanded(
-      child: ListView(
-        children: [
-          _buildTransactionItem('blue sky tech legal solutions', '24,000.00',
-              '#23-24-0115\n07 Sep, 24'),
-          _buildTransactionItem(
-              'Mca Saleel', '36,700.00', '#23-24-0114\n28 Aug, 24'),
-          _buildTransactionItem(
-              'gulf corp logi', '0.00', '#23-24-0113\n14 Aug, 24'),
-        ],
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('sales').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView(
+            children: snapshot.data!.docs.map((document) {
+              // Fetch required data fields
+              String billingName = document['billingName'];
+              String balance = document['balance'].toString();
+              String total = document['total'].toString();
+              String invoiceNumber = document['invoiceNumber'].toString();
+
+              return _buildTransactionItem(
+                  billingName, total, balance, invoiceNumber);
+            }).toList(),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildTransactionItem(String title, String amount, String details) {
+  Widget _buildTransactionItem(
+      String title, String total, String balance, String invoiceNumber) {
     return Card(
       color: Colors.white,
       elevation: 0,
@@ -238,7 +251,7 @@ class _TnxDashboardState extends State<TnxDashboard> {
                   ),
                 ),
                 Text(
-                  details,
+                  'Invoice: #$invoiceNumber\n21-09-2024',
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
               ],
@@ -268,7 +281,7 @@ class _TnxDashboardState extends State<TnxDashboard> {
                     Text('Total',
                         style:
                             TextStyle(color: Colors.grey[600], fontSize: 12)),
-                    Text(amount,
+                    Text(total,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                   ],
@@ -279,7 +292,7 @@ class _TnxDashboardState extends State<TnxDashboard> {
                     Text('Balance',
                         style:
                             TextStyle(color: Colors.grey[600], fontSize: 12)),
-                    Text(amount,
+                    Text(balance,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                   ],
